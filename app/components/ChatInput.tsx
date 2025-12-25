@@ -82,11 +82,11 @@ export default function ChatInput({ onSend, onStop, isGenerating, disabled }: Ch
   }, []);
 
   return (
-    <div className="w-full  border-t border-gray-700 bg-gray-800 p-4 sticky bottom-0">
+    <div className="border-t border-gray-700 bg-gray-800 p-4 sticky bottom-0">
       <form 
         ref={formRef}
         onSubmit={handleSubmit} 
-        className="w-full relative flex items-center"
+        className="max-w-3xl mx-auto relative flex items-center"
       >
  
         {showSuggestions && suggestions.length > 0 && !isGenerating && (
@@ -115,31 +115,24 @@ export default function ChatInput({ onSend, onStop, isGenerating, disabled }: Ch
             setShowSuggestions(true);
           }}
           onFocus={() => setShowSuggestions(true)}
-       
-          placeholder={isGenerating ? "AI is typing..." : "Message AI..."} 
-          className="w-full bg-gray-700 text-white placeholder-gray-400 rounded-full py-3 pl-5 pr-12 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all z-10"
-      
-          disabled={disabled || isGenerating} 
+          placeholder={isGenerating ? "Senior Advisor is typing..." : "Ask about market trends..."} 
+          readOnly={isGenerating} 
+          className={`w-full bg-gray-700 text-white placeholder-gray-400 rounded-full py-3 pl-5 pr-12 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all z-10 
+            ${isGenerating ? "opacity-70 cursor-wait" : ""}`}
         />
         
-       
         <button
           type="submit"
-          disabled={(!isGenerating && !input.trim())}
+          disabled={!isGenerating && !input.trim()}
           className={`absolute right-2 p-2 rounded-full text-white transition-colors z-20 ${
              isGenerating 
-               ? "bg-red-500 hover:bg-red-600 animate-pulse" 
+               ? "bg-red-500 hover:bg-red-600 shadow-lg shadow-red-900/20" 
                : "bg-blue-600 hover:bg-blue-700"              
           }`}
         >
-          {isGenerating ? (
-             <Square size={18} fill="currentColor" />
-          ) : (
-             <Send size={18} /> 
-          )}
+          {isGenerating ? <Square size={18} fill="currentColor" /> : <Send size={18} />}
         </button>
       </form>
-      
       <div className="text-center mt-2">
         <span className="text-xs text-gray-400">AI can make mistakes. Check important info.</span>
       </div>

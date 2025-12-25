@@ -5,9 +5,9 @@ import { PROVIDERS } from '@/app/utils/enum';
 export async function POST(req: Request) {
   try {
     // 1. Get the message from the request body
-    const { message } = await req.json();
-
-    if (!message) {
+    const { messages } = await req.json();
+    console.log("Received message:", messages);
+    if (!messages) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const llm = new LLM(PROVIDERS.OpenRouter);
 
     // 3. Get the stream from your service
-    const stream = await llm.llmService(message);
+    const stream = await llm.llmService(messages);
 
     // 4. Return the stream directly
     // Next.js understands ReadableStream and will stream it to the client
