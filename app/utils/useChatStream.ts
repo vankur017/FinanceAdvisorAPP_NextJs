@@ -20,7 +20,7 @@ import { set } from "mongoose";
         abortControllerRef.current = new AbortController();
 
         try{
-            const data = await fetch("http://localhost:4000/api/chat",{
+            const data = await fetch("/api/chat",{
                 method: "POST",
                 headers:{"Content-type" : "application/json"},
                 body: JSON.stringify({messages:text}),

@@ -14,7 +14,7 @@ const useDebouncedChatInput=(query: string, delay=300)=>{
     useEffect(()=>{
         const timer = setTimeout(async()=>{
         try{
-            const data = await fetch(`http://localhost:4000/api/suggestions?q=${query}`)
+            const data = await fetch(`/api/suggestions?q=${encodeURIComponent(debouncedValue)}`);
             const json = await data.json();
 
             setSuggestion(json);
