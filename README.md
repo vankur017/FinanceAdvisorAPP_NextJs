@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+💹 Finance Advisor AI
 
-First, run the development server:
+This is a professional-grade Next.js application designed to provide high-authority financial advisory and real-time market analysis. Unlike standard chatbots, this system adopts the persona of a senior financial strategist with 20+ years of institutional experience.
+🌟 Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This platform leverages the Next.js 15 App Router to provide a seamless, unified experience for financial data processing and AI streaming.
+Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    Senior Expert Persona: Provides confident, data-driven analysis without typical "AI assistant" disclaimers.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+    Real-Time Streaming: Implements ReadableStream API for instantaneous "typing" effects.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    Intelligent Suggestions: A debounced MongoDB-backed search bar for quick financial topic discovery.
 
-## Learn More
+    Unified Backend: API routes handle LLM logic and Database interactions on a single port (4000).
 
-To learn more about Next.js, take a look at the following resources:
+    Resilient UI: Built with Tailwind CSS, featuring a dark-themed, institutional-grade interface.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🏗️ Technical Stack
+Category	Technology
+Framework	Next.js 15 (App Router)
+Runtime	Bun
+Styling	Tailwind CSS
+Database	MongoDB (Mongoose Singleton)
+AI Models	OpenRouter (Multi-model rotation) / Google Gemini
+Icons	Lucide-React
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+Getting Started
+1. Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Ensure you have Bun installed (recommended for performance).
+2. Environment Setup
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a .env.local file in the root directory:
+Code snippet
+
+OPENROUTER_API_KEY=your_api_key
+MONGODB_URI=your_mongodb_connection_string
+
+3. Installation
+Bash
+
+bun install
+
+4. Run Development Server
+Bash
+
+bun dev -p 4000
+
+Open http://localhost:4000 to access the advisor.
+📂 Project Structure
+
+    app/api/chat/route.ts: The core streaming engine. Handles the bridge between the UI and the LLM.
+
+    app/utils/useChatStream.ts: Custom React hook managing the complex state of AI chunks and AbortControllers.
+
+    app/utils/llm.ts: The logic layer for prompt engineering and model selection.
+
+    app/components/: Modular UI components (ChatInput, ChatMessage, Suggestions).
+
+🛠️ Key Functionalities
+The Streaming Hook (useChatStream)
+
+Our implementation uses an AbortController to allow users to interrupt the "Senior Advisor" mid-sentence, saving API costs and providing better UX.
+Data-Driven UI
+
+The UI distinguishes between user and assistant roles using a conditional logic switch, ensuring the Advisor’s responses are framed with professional Emerald-themed branding while User messages remain distinct.
