@@ -1,34 +1,4 @@
-// import React, { useState } from 'react'
-// import { Send } from 'lucide-react'
 
-// const ChatInput = () => {
-
-//   const [input, setInput] = useState('')
-
-//   const handleSend= (e: React.FormEvent)=>{
-//     e.preventDefault();
-//     console.log(input);
-//   }
-//   return (
-//     <div className='border-t border-gray-700 bg-gray-800 p-4 sticky bottom-6'>
-
-//       <form className='my-10 flex gap-2'>
-//         <input
-//           placeholder='typing...'
-//           value={input}
-//           onChange={(e)=>setInput(e.target.value)}
-//         />
-
-//         <button>
-//           <Send onClick={handleSend} />
-//         </button>
-//       </form>
-
-//     </div>
-//   )
-// }
-
-// export default ChatInput
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Square, Search } from 'lucide-react';

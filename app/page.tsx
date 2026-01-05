@@ -36,7 +36,7 @@ const Home: React.FC<YourComponentProps> = () => {
         </header>
     
         <main className="flex-1 overflow-y-auto p-4">
-          <div className="max-w-3xl mx-auto flex flex-col justify-end min-h-0">
+          <div className="max-w-5xl mx-auto flex flex-col justify-end min-h-0">
             {messages.map((msg, idx) => (
               <ChatMessage key={idx} role={msg.role} content={msg.content} />
             ))}
