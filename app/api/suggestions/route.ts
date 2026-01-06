@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   if (q.length < 2) return NextResponse.json([]);
 
   await connectDB();
- console.log("Connected to DB for suggestions");
+  console.log("Connected to DB for suggestions");
   const matches = await Suggestion.find({
     text: { $regex: q, $options: "i" }
   }).limit(5).select('text -_id');

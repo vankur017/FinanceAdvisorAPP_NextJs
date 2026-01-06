@@ -1,91 +1,87 @@
-"use client"
-import { use, useRef, useState } from "react";
-import { POST } from "../api/chat/route";
-import { set } from "mongoose";
+"use client";
 
+import { useRef, useState } from "react";
 
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
 
- const useChatStream = () => {
+const useChatStream = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    { role: "assistant", content: "Hello! How can I assist you today?" },
+  ]);
+  const [isLoading, setLoading] = useState(false);
 
-    const [messages, setMessages] = useState<Array<{role: string, content: string}>>([
-        {role:"assistant", content: "Hello! How can I assist you today?"}
-    ]);
-    const [isLoading, setLoading] = useState(false);
-    const abortControllerRef = useRef<AbortController | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-    const sendMessage = async(text: string)=>{
-        setMessages((prev)=>[...prev, {role:"user", content:text}])
-        setLoading(true);
+  const sendMessage = async (text: string) => {
+    // 🔁 Abort previous stream
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = new AbortController();
 
-        abortControllerRef.current = new AbortController();
+    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    setLoading(true);
 
-        try{
-            const data = await fetch("/api/chat",{
-                method: "POST",
-                headers:{"Content-type" : "application/json"},
-                body: JSON.stringify({messages:text}),
-                signal: abortControllerRef.current.signal, 
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: text }),
+        signal: abortControllerRef.current.signal,
+      });
 
-            });
+      if (!response.body) {
+        throw new Error("No response body");
+      }
 
-            if(!data.body){
-                setMessages((prev)=>[...prev, {role:"assistant", content: ""}]);
-                throw new Error("No response from server");
-            }
-            
-            const reader = data?.body?.getReader();
-            const decoder = new TextDecoder();
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-            setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-            let aiResponse = "";
-            if (!reader) {
-                throw new Error("No response body to read from stream.");
-            }
-            while (true) {
-                const { done, value } = await reader.read();
-                if(done) break;
+      let aiResponse = "";
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-                const chunk = decoder.decode(value, {stream: true});
-                aiResponse+=chunk;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-                setMessages((prev)=>{
-                    const newMsg = [...prev];
-                    newMsg[newMsg.length -1] = {role:"assistant", content: aiResponse}
+        aiResponse += decoder.decode(value, { stream: true });
 
-                    return newMsg
-                })
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: "assistant",
+            content: aiResponse,
+          };
+          return updated;
+        });
+      }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        console.log("Stream aborted");
+        return;
+      }
 
-            }
-
-        }
-        catch(err){
-            const errorMessage = err instanceof Error ? err.message : String(err);
-            if(errorMessage === 'AbortError'){
-                console.log("Fetch aborted");
-            }
-            else{
-                console.error("Stream Error:", errorMessage);
-                setMessages((prev) => [...prev, { role: 'assistant', content: "Error: Could not fetch response." }]);
-            }
-        }
-            
-          finally{
-            setLoading(false);
-        }
-    }
-     const stopGeneration = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+      console.error("Stream Error:", err);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Error: Unable to fetch response." },
+      ]);
+    } finally {
+      setLoading(false);
     }
   };
 
-    return {
-        messages,
-        sendMessage,
-        stopGeneration,
-        isLoading
-        
-    }
-}
+  const stopGeneration = () => {
+    abortControllerRef.current?.abort();
+  };
 
-export default useChatStream
+  return {
+    messages,
+    sendMessage,
+    stopGeneration,
+    isLoading,
+  };
+};
+
+export default useChatStream;
