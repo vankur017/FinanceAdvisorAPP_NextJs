@@ -106,7 +106,7 @@ export class LLM {
               // Standard typing effect implementation
               for (const char of text) {
                 controller.enqueue(encoder.encode(char));
-                await delay(5 + Math.random() * 10);
+                await delay(10 + Math.random() * 10);
               }
             }
           }
