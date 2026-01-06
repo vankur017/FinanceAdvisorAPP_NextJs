@@ -3,16 +3,22 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ISuggestion extends Document {
   text: string;
   category: string;
-  popularity: number; // Useful for sorting top suggestions later
+  popularity: number;
 }
 
-const SuggestionSchema = new Schema<ISuggestion>({
-  text: { type: String, required: true, unique: true }, // unique prevents duplicates
-  category: { type: String, default: "General" },
-  popularity: { type: Number, default: 0 }
-});
+const SuggestionSchema = new Schema<ISuggestion>(
+  {
+    text: { type: String, required: true, unique: true },
+    category: { type: String, default: "General" },
+    popularity: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
 
-// Index for fast text search
-SuggestionSchema.index({ text: 'text' }); 
+// Text index for search
+SuggestionSchema.index({ text: "text" });
 
-export const Suggestion = mongoose.model<ISuggestion>("Suggestion", SuggestionSchema);
+// ✅ FIX: Reuse model if already compiled
+export const Suggestion =
+  mongoose.models.Suggestion ||
+  mongoose.model<ISuggestion>("Suggestion", SuggestionSchema);
